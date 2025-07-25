@@ -101,7 +101,15 @@ async def handle_photo(message: Message, state: FSMContext):
     else:
         await message.answer("Сначала выбери своё направление ниже 👇")
 
-@router.callback_query(F.data.in_(["Инструкторы", "Образовалка", "Ивент"]))
+@router.callback_query(F.data.in_([
+    "Инструкторы",
+    "Форматы",
+    "Сервис",
+    "ШтабМедиа",
+    "События",
+    "Участники",
+    "Зрители"
+]))
 async def handle_direction(callback: CallbackQuery, state: FSMContext):
     user_id = str(callback.from_user.id)
     user_state = await db.get_state(user_id)
