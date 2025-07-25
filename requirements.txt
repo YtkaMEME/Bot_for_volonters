@@ -1,0 +1,6 @@
+aiogram==3.4.1
+gspread
+oauth2client
+python-dotenv
+google-api-python-client
+aiosqlite
