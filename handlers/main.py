@@ -22,6 +22,21 @@ class CheckinStates(StatesGroup):
     waiting_direction = State()
     checked_in = State()
 
+@router.message(commands=["start"])
+async def cmd_start(message: Message, state: FSMContext):
+    user_id = str(message.from_user.id)
+    # Сбросить состояние FSM и удалить состояние из базы
+    await state.clear()
+    await db.delete_state(user_id)
+    text = (
+        f"Привет, {message.from_user.full_name}! 👋\n\n"
+        "Я — бот для учёта волонтёров.\n\n"
+        "Чтобы начать смену, просто отправь мне свою фотографию (селфи).\n"
+        "Я помогу тебе отметить чек-ин, выбрать направление и завершить смену.\n\n"
+        "Если возникнут вопросы — просто напиши /start ещё раз!"
+    )
+    await message.answer(text)
+
 @router.message()
 async def handle_photo(message: Message, state: FSMContext):
     if message.media_group_id:

@@ -27,7 +27,7 @@ async def check_user_states(bot: Bot, db: AsyncDB):
             time_diff = now - checkin_time
             try:
                 # Напоминание через 15 часов
-                if timedelta(minutes=3) < time_diff <= timedelta(minutes=5):
+                if timedelta(hours=REMINDER_INTERVAL_HOURS) < time_diff <= timedelta(hours=INCOMPLETE_INTERVAL_HOURS):
                     await bot.send_message(int(user_id), "🔔 Напоминание: не забудь завершить смену!")
                 # Если прошло больше суток — сброс состояния, ожидание нового чек-ина
                 elif time_diff > timedelta(minutes=5):
