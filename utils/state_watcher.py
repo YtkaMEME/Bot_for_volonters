@@ -30,7 +30,7 @@ async def check_user_states(bot: Bot, db: AsyncDB):
                 if timedelta(hours=REMINDER_INTERVAL_HOURS) < time_diff <= timedelta(hours=INCOMPLETE_INTERVAL_HOURS):
                     await bot.send_message(int(user_id), "🔔 Напоминание: не забудь завершить смену!")
                 # Если прошло больше суток — сброс состояния, ожидание нового чек-ина
-                elif time_diff > timedelta(minutes=5):
+                elif time_diff > timedelta(hours=INCOMPLETE_INTERVAL_HOURS):
                     mark_incomplete_shift(username)
                     await bot.send_message(int(user_id), "😢 Ты не завершил смену в течение суток. Сохраняю как незавершённую. Теперь можешь начать новую смену, отправив фото для чек-ина.")
                     await db.delete_state(user_id)
