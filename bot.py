@@ -5,6 +5,9 @@ from handlers import main
 from utils.bot_instance import bot 
 from utils.state_watcher import check_user_states
 from utils.db import AsyncDB
+from aiogram.filters import Command
+from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
 
 async def main_entry():
     storage = MemoryStorage()

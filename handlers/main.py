@@ -8,6 +8,8 @@ from utils.drive import save_volunteer_photo
 from utils.db import AsyncDB
 from config import BOT_TOKEN
 from datetime import datetime
+from aiogram.filters import Command
+from aiogram.filters import CommandStart
 import os
 from utils.bot_instance import bot 
 
@@ -22,7 +24,7 @@ class CheckinStates(StatesGroup):
     waiting_direction = State()
     checked_in = State()
 
-@router.message(commands=["start"])
+@router.message((Command("start")))
 async def cmd_start(message: Message, state: FSMContext):
     user_id = str(message.from_user.id)
     # Сбросить состояние FSM и удалить состояние из базы
