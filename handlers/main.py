@@ -6,7 +6,7 @@ from keyboards.inline import direction_keyboard
 from utils.sheets import write_checkin, write_checkout
 from utils.drive import save_volunteer_photo
 from utils.db import AsyncDB
-from config import BOT_TOKEN
+from config import BOT_TOKEN, IMAGES_DIR, BASE_URL
 from datetime import datetime
 from aiogram.filters import Command
 from aiogram.filters import CommandStart
@@ -68,7 +68,7 @@ async def handle_photo(message: Message, state: FSMContext):
             is_checkin
         )
         if not photo_drive_url:
-            await message.answer("❌ Не удалось загрузить фото на Google Drive.")
+            await message.answer("❌ Не удалось загрузить фото на сервере")
             return
     except Exception as e:
         await message.answer(f"❌ Ошибка загрузки фото: {e}")

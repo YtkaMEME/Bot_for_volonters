@@ -7,6 +7,10 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from datetime import datetime
+from PIL import Image
+from config import IMAGES_DIR
+from config import BASE_URL
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 CREDENTIALS_FILE = 'credentials.json'
@@ -50,19 +54,33 @@ def upload_to_drive(local_path: str, new_filename: str) -> str:
     ).execute()
     return file['webViewLink']
 
-async def save_volunteer_photo(bot, file_id: str, name: str, is_checkin: bool) -> str:
+
+
+os.makedirs(IMAGES_DIR, exist_ok=True)
+
+async def save_volunteer_photo(bot: Bot, file_id: str, name: str, is_checkin: bool) -> str:
     now = datetime.now()
     date_str = now.strftime("%Y-%m-%d")
-    label = "Чек-ин" if is_checkin else "Чек-аут"
+    label = "checkin" if is_checkin else "checkout"
     filename = f"{name}_{date_str}_{label}.jpg".replace(" ", "_")
-    local_path = f"temp_{filename}"
+    local_path = os.path.join(IMAGES_DIR, filename)
+
+    # Скачиваем фото
+    file: File = await bot.get_file(file_id)
+    file_path = file.file_path
+    content = await bot.download_file(file_path)
+    temp_path = f"temp_{filename}"
+    async with aiofiles.open(temp_path, "wb") as f:
+        await f.write(content.read())
+
+    # Сжимаем фото и сохраняем в images/
     try:
-        await download_photo(bot, file_id, local_path)
-        drive_link = upload_to_drive(local_path, filename)
-        return drive_link
-    except Exception as e:
-        print(f"⚠️ Ошибка при обработке фото: {e}")
-        return ""
+        with Image.open(temp_path) as img:
+            img = img.convert("RGB")
+            img.save(local_path, "JPEG", quality=70, optimize=True)  # quality=70 — компромисс между размером и качеством
     finally:
-        if os.path.exists(local_path):
-            os.remove(local_path)
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+    # Возвращаем публичную ссылку
+    return f"{BASE_URL}/{filename}"
