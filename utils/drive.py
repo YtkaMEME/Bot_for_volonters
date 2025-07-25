@@ -61,8 +61,9 @@ os.makedirs(IMAGES_DIR, exist_ok=True)
 async def save_volunteer_photo(bot: Bot, file_id: str, name: str, is_checkin: bool) -> str:
     now = datetime.now()
     date_str = now.strftime("%Y-%m-%d")
+    time_str = now.strftime("%H-%M")
     label = "checkin" if is_checkin else "checkout"
-    filename = f"{name}_{date_str}_{label}.jpg".replace(" ", "_")
+    filename = f"{name}_{date_str}_{time_str}_{label}.jpg".replace(" ", "_")
     local_path = os.path.join(IMAGES_DIR, filename)
 
     # Скачиваем фото
