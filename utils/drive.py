@@ -7,6 +7,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from aiogram.filters import Command
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 CREDENTIALS_FILE = 'credentials.json'
