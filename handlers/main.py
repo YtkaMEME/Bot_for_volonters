@@ -95,7 +95,7 @@ async def handle_photo(message: Message, state: FSMContext):
         await state.update_data(photo_checkin=photo_drive_url, username=username, name=full_name, date=today, time_checkin=current_time, checkin_datetime=now.strftime("%Y-%m-%d %H:%M:%S"))
     elif user_state[5] == "completed_checkin":
         write_checkout(username, current_time, photo_drive_url)
-        await message.answer("Спасибо, ты успешно отметил завершение смены 💫")
+        await message.answer("Спасибо, ты успешно отметил завершение смены 💫 \n\nТеперь, чтобы начать новую смену, просто отправь селфи (для этого не нужно запускать бот ещё раз)")
         await db.delete_state(user_id)
         await state.clear()
     else:
@@ -131,4 +131,7 @@ async def handle_direction(callback: CallbackQuery, state: FSMContext):
         time=user_state[8],
         photo_file_id=user_state[6]
     )
-    await callback.message.edit_text("Ты успешно отметил начало смены ✅")
+    await callback.message.edit_text(
+        "Ты успешно отметил начало смены ✅\n\n"
+        "Чтобы завершить смену, просто отправь селфи с завершением (для этого не нужно запускать бот заново)"
+    )
