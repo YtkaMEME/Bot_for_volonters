@@ -42,20 +42,22 @@ def find_nearest_checkin_row(username, checkout_time):
 
 # Чек-ин: создаём новую строку с пустыми полями для чек-аута
 def write_checkin(user_id, username, name, direction, time, photo_file_id):
+    photo_hyperlink = f'=HYPERLINK("{photo_file_id}", "ссылка")'
     date_str = datetime.now().strftime("%Y-%m-%d")
     tg_link = f"https://t.me/{username}"
     sheet.append_row([
-        tg_link, name, date_str, direction, time, "", photo_file_id, ""
-    ])
+        tg_link, name, date_str, direction, time, "", photo_hyperlink, ""
+    ], value_input_option='USER_ENTERED')
 
 # Чек-аут: ищем ближайший чек-ин без чек-аута и записываем туда
 def write_checkout(username, time, photo_file_id):
     now = datetime.now()
     checkout_time = now.strftime("%Y-%m-%d %H:%M:%S")
     row = find_nearest_checkin_row(username, checkout_time)
+    photo_hyperlink = f'=HYPERLINK("{photo_file_id}", "ссылка")'
     if row:
         sheet.update(f"F{row}", [[time]])          # ВРЕМЯ ЗАВЕРШЕНИЯ РАБОТЫ
-        sheet.update(f"H{row}", [[photo_file_id]]) # ФОТОГРАФИЯ КОНЦА РАБОТЫ
+        sheet.update(f"H{row}", [[photo_hyperlink]],value_input_option='USER_ENTERED') # ФОТОГРАФИЯ КОНЦА РАБОТЫ
     else:
         print(f"❌ Строка не найдена для {username} для чек-аута (поиск ближайшей)")
 
