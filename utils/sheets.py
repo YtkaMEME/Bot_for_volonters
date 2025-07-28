@@ -45,8 +45,12 @@ def write_checkin(user_id, username, name, direction, time, photo_file_id):
     photo_hyperlink = f'=HYPERLINK("{photo_file_id}", "ссылка")'
     date_str = datetime.now().strftime("%Y-%m-%d")
     tg_link = f"https://t.me/{username}"
+    # Найдём следующую строку, чтобы правильно вставить формулу
+    next_row = len(sheet.get_all_values()) + 1
+    duration_formula = f'=IF(E{next_row}="", "", TEXT(IF(F{next_row}="", NOW()-E{next_row}, F{next_row}-E{next_row}), "hh:mm"))'
+
     sheet.append_row([
-        tg_link, name, date_str, direction, time, "", photo_hyperlink, ""
+        tg_link, name, date_str, direction, time, "", photo_hyperlink, "", duration_formula
     ], value_input_option='USER_ENTERED')
 
 # Чек-аут: ищем ближайший чек-ин без чек-аута и записываем туда
